@@ -79,7 +79,7 @@ public class CompanyController {
     }
 
     @PostMapping
-    public Company addNewCompany(@RequestParam(value = "companyId") int companyId, @RequestParam(value = "companyName") String companyName, @RequestParam(value = "employees")List<Employee> employees) {
+    public Company addNewCompany(@RequestParam(value = "companyId") int companyId, @RequestParam(value = "companyName") String companyName, @RequestParam(value = "employees") List<Employee> employees) {
         List<Company> companies = new ArrayList<>();
         List<Employee> employeesOne = new ArrayList<>();
         List<Employee> employeesTwo = new ArrayList<>();
@@ -130,7 +130,11 @@ public class CompanyController {
         employeesTwo.add(new Employee(4, "Xiaoxia", 15, "female", 20000));
         companies.add(new Company(0, "NIKE", employeesOne));
         companies.add(new Company(1, "ADIDAS", employeesTwo));
-        companies.removeIf(company -> company.getCompanyId() == companyId);
+        for (Company company : companies) {
+            if (company.getCompanyId() == companyId) {
+                company.setEmployees(new ArrayList<>());
+            }
+        }
     }
 }
 
