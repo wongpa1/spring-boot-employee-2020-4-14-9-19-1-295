@@ -2,6 +2,7 @@ package com.thoughtworks.springbootemployee.controller;
 
 import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.Employee;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ public class CompanyController {
 
     List<Company> companies = new ArrayList<>();
 
-    private void initialCompanyList() {
+    private void initialCompanyList(List<Company> companies) {
         List<Employee> nikeEmployees = new ArrayList<>();
         List<Employee> adidasEmployees = new ArrayList<>();
         nikeEmployees.add(new Employee(0, "Xiaoming", 20, "male", 20000));
@@ -29,7 +30,8 @@ public class CompanyController {
     @GetMapping
     public List<Company> getAllCompanies(@RequestParam(value = "page", required = false, defaultValue = "0") int page,
                                          @RequestParam(value = "pageSize", required = false, defaultValue = "0") int pageSize) {
-        initialCompanyList();
+        List<Company> companies = new ArrayList<>();
+        initialCompanyList(companies);
         if (page != 0 && pageSize != 0) {
             return companies.subList((page - 1) * pageSize, page * pageSize);
         }
@@ -38,7 +40,8 @@ public class CompanyController {
 
     @GetMapping(path = "/{companyId}")
     public Company getCompanyById(@PathVariable("companyId") int companyId) {
-        initialCompanyList();
+        List<Company> companies = new ArrayList<>();
+        initialCompanyList(companies);
         for (Company company : companies) {
             if (company.getCompanyId() == companyId) {
                 return company;
@@ -49,7 +52,8 @@ public class CompanyController {
 
     @GetMapping(path = "/{companyId}/employees")
     public List<Employee> getCompanyEmployeesById(@PathVariable("companyId") int companyId) {
-        initialCompanyList();
+        List<Company> companies = new ArrayList<>();
+        initialCompanyList(companies);
         for (Company company : companies) {
             if (company.getCompanyId() == companyId) {
                 return company.getEmployees();
@@ -59,30 +63,32 @@ public class CompanyController {
     }
 
     @PostMapping
-    public Company addNewCompany(@RequestBody Company newAddCompany) {
-        initialCompanyList();
+    @ResponseStatus(HttpStatus.CREATED)
+    public List<Company> addNewCompany(@RequestBody Company newAddCompany) {
+        List<Company> companies = new ArrayList<>();
+        initialCompanyList(companies);
         companies.add(newAddCompany);
-        return newAddCompany;
+        return companies;
     }
 
     @PutMapping(path = "/{companyId}")
-    public Company modifyEmployee(@PathVariable("companyId") int companyId, @RequestBody Company newCompany) {
-        initialCompanyList();
-
+    public List<Company> modifyEmployee(@PathVariable("companyId") int companyId, @RequestBody Company newCompany) {
+        List<Company> companies = new ArrayList<>();
+        initialCompanyList(companies);
         for (Company company : companies) {
             if (company.getCompanyId() == companyId) {
                 company.setCompanyId(newCompany.getCompanyId());
                 company.setCompanyName(newCompany.getCompanyName());
                 company.setEmployees(newCompany.getEmployees());
-                return company;
             }
         }
-        return null;
+        return companies;
     }
 
     @DeleteMapping(path = "/{companyId}")
     public void deleteEmployeesBelongToCompany(@PathVariable("companyId") int companyId) {
-        initialCompanyList();
+        List<Company> companies = new ArrayList<>();
+        initialCompanyList(companies);
         for (Company company : companies) {
             if (company.getCompanyId() == companyId) {
                 company.setEmployees(new ArrayList<>());

@@ -15,6 +15,9 @@ public class Company {
         this.employeesNumber = employees.size();
     }
 
+    public Company() {
+    }
+
     public int getCompanyId() {
         return companyId;
     }
