@@ -31,7 +31,7 @@ public class EmployeesController {
         }
         if (page != 0 && pageSize != 0) {
             //TODO: use list size to do paging
-            return employees.stream().filter(employee -> employee.getId() >= (page - 1) * pageSize && employee.getId() < page * pageSize).collect(Collectors.toList());
+            return employees.subList((page - 1) * pageSize, page * pageSize - 1);
         }
         return employees;
     }

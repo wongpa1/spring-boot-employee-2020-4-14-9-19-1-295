@@ -1,13 +1,11 @@
 package com.thoughtworks.springbootemployee.controller;
 
-import com.google.gson.Gson;
 import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.Employee;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/companies")
@@ -33,8 +31,7 @@ public class CompanyController {
                                          @RequestParam(value = "pageSize", required = false, defaultValue = "0") int pageSize) {
         initialCompanyList();
         if (page != 0 && pageSize != 0) {
-            //TODO: use list size to do paging
-            return companies.stream().filter(company -> company.getCompanyId() >= (page - 1) * pageSize && company.getCompanyId() < page * pageSize).collect(Collectors.toList());
+            return companies.subList((page - 1) * pageSize, page * pageSize - 1);
         }
         return companies;
     }
