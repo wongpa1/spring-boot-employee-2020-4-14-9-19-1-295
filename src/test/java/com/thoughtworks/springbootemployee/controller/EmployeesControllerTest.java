@@ -57,7 +57,8 @@ public class EmployeesControllerTest {
         Assert.assertEquals(200, response.getStatusCode());
 
         Employee employee = response.getBody().as(Employee.class);
-        Assert.assertEquals(1, employee.getId());
+        Integer integer = 1;
+        Assert.assertEquals(integer,employee.getId());
         Assert.assertEquals("Xiaohong", employee.getName());
     }
 

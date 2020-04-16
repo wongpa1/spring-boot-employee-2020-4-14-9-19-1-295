@@ -59,7 +59,8 @@ public class CompanyControllerTest {
         Assert.assertEquals(200, response.getStatusCode());
 
         Company company = response.getBody().as(Company.class);
-        Assert.assertEquals(1, company.getCompanyId());
+        Integer integer = 1;
+        Assert.assertEquals(integer, company.getCompanyId());
         Assert.assertEquals("ADIDAS", company.getCompanyName());
     }
 
@@ -151,7 +152,6 @@ public class CompanyControllerTest {
         MockMvcResponse response = given().contentType(ContentType.JSON)
                 .when()
                 .delete("/companies/1");
-
         Assert.assertEquals(200, response.getStatusCode());
     }
 
