@@ -1,6 +1,7 @@
 package com.thoughtworks.springbootemployee.controller;
 
 import com.thoughtworks.springbootemployee.model.Employee;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -11,9 +12,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/employees")
 public class EmployeesController {
 
-    List<Employee> employees = new ArrayList<>();
-
-    private void initialEmployeeList() {
+    private void initialEmployeeList(List<Employee> employees) {
         employees.add(new Employee(0, "Xiaoming", 20, "male", 20000));
         employees.add(new Employee(1, "Xiaohong", 19, "female", 20000));
         employees.add(new Employee(2, "Xiaozhi", 15, "male", 20000));
@@ -25,21 +24,21 @@ public class EmployeesController {
     public List<Employee> getAllEmployees(@RequestParam(value = "gender", required = false, defaultValue = "All") String gender,
                                           @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                                           @RequestParam(value = "pageSize", required = false, defaultValue = "0") int pageSize) {
-        initialEmployeeList();
+        List<Employee> employees = new ArrayList<>();
+        initialEmployeeList(employees);
         if (!gender.equals("All")) {
             return employees.stream().filter(employee -> employee.getGender().equals(gender)).collect(Collectors.toList());
         }
         if (page != 0 && pageSize != 0) {
-            //TODO: use list size to do paging
-            return employees.subList((page - 1) * pageSize, page * pageSize - 1);
+            return employees.subList((page - 1) * pageSize, page * pageSize);
         }
         return employees;
     }
 
     @GetMapping(path = "/{employeeID}")
     public Employee getEmployeeByID(@PathVariable("employeeID") int id) {
-
-        initialEmployeeList();
+        List<Employee> employees = new ArrayList<>();
+        initialEmployeeList(employees);
         for (Employee employee : employees) {
             if (employee.getId() == id) {
                 return employee;
@@ -49,16 +48,18 @@ public class EmployeesController {
     }
 
     @PostMapping
-    public Employee addEmployee(@RequestBody Employee employee) {
-        initialEmployeeList();
+    @ResponseStatus(HttpStatus.CREATED)
+    public List<Employee> addEmployee(@RequestBody Employee employee) {
+        List<Employee> employees = new ArrayList<>();
+        initialEmployeeList(employees);
         employees.add(employee);
-        return employee;
+        return employees;
     }
 
     @PutMapping(path = "/{employeeId}")
-    public Employee modifyEmployee(@PathVariable("employeeId") int employeeId, @RequestBody Employee newEmployee) {
-
-        initialEmployeeList();
+    public List<Employee> modifyEmployee(@PathVariable("employeeId") int employeeId, @RequestBody Employee newEmployee) {
+        List<Employee> employees = new ArrayList<>();
+        initialEmployeeList(employees);
         for (Employee employee : employees) {
             if (employee.getId() == employeeId) {
                 employee.setId(newEmployee.getId());
@@ -66,16 +67,15 @@ public class EmployeesController {
                 employee.setAge(newEmployee.getAge());
                 employee.setGender(newEmployee.getGender());
                 employee.setSalary(newEmployee.getSalary());
-                return employee;
             }
         }
-        return null;
+        return employees;
     }
 
     @DeleteMapping(path = "/{employeeId}")
     public void deleteEmployee(@PathVariable("employeeId") int employeeId) {
-
-        initialEmployeeList();
+        List<Employee> employees = new ArrayList<>();
+        initialEmployeeList(employees);
         employees.removeIf(employee -> employee.getId() == employeeId);
     }
 }

@@ -31,7 +31,7 @@ public class CompanyController {
                                          @RequestParam(value = "pageSize", required = false, defaultValue = "0") int pageSize) {
         initialCompanyList();
         if (page != 0 && pageSize != 0) {
-            return companies.subList((page - 1) * pageSize, page * pageSize - 1);
+            return companies.subList((page - 1) * pageSize, page * pageSize);
         }
         return companies;
     }
