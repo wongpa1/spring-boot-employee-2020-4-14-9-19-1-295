@@ -11,15 +11,19 @@ import java.util.stream.Collectors;
 @RequestMapping("/employees")
 public class EmployeesController {
 
+    List<Employee> employees = new ArrayList<>();
+
     @GetMapping
-    public List<Employee> getAllEmployees(@RequestParam(value = "gender", required = false, defaultValue = "Null") String gender, @RequestParam(value = "page", required = false, defaultValue = "0") int page, @RequestParam(value = "pageSize", required = false, defaultValue = "0") int pageSize) {
-        List<Employee> employees = new ArrayList<>();
+    public List<Employee> getAllEmployees(@RequestParam(value = "gender", required = false, defaultValue = "All") String gender,
+                                          @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                          @RequestParam(value = "pageSize", required = false, defaultValue = "0") int pageSize) {
+
         employees.add(new Employee(0, "Xiaoming", 20, "male", 20000));
         employees.add(new Employee(1, "Xiaohong", 19, "female", 20000));
         employees.add(new Employee(2, "Xiaozhi", 15, "male", 20000));
         employees.add(new Employee(3, "Xiaomgang", 26, "male", 20000));
         employees.add(new Employee(4, "Xiaoxia", 15, "female", 20000));
-        if (!gender.equals("Null")) {
+        if (!gender.equals("All")) {
             return employees.stream().filter(employee -> employee.getGender().equals(gender)).collect(Collectors.toList());
         }
         if (page != 0 && pageSize != 0) {
@@ -30,8 +34,7 @@ public class EmployeesController {
 
     @GetMapping(path = "/{employeeID}")
     public Employee getEmployeeByID(@PathVariable("employeeID") int id) {
-        List<Employee> employees = new ArrayList<>();
-        Employee targetEmployee = null;
+
         employees.add(new Employee(0, "Xiaoming", 20, "male", 20000));
         employees.add(new Employee(1, "Xiaohong", 19, "female", 20000));
         employees.add(new Employee(2, "Xiaozhi", 15, "male", 20000));
@@ -39,15 +42,16 @@ public class EmployeesController {
         employees.add(new Employee(4, "Xiaoxia", 15, "female", 20000));
         for (Employee employee : employees) {
             if (employee.getId() == id) {
-                targetEmployee = employee;
+                return employee;
             }
         }
-        return targetEmployee;
+        return null;
     }
 
     @PostMapping
-    public Employee addEmployee(@RequestParam(value = "id") int employeeId, @RequestParam(value = "name") String employeeName, @RequestParam(value = "age") int employeeAge, @RequestParam(value = "gender") String employeeGender, @RequestParam(value = "salary") int employeeSalary) {
-        List<Employee> employees = new ArrayList<>();
+    public Employee addEmployee(@RequestParam(value = "id") int employeeId, @RequestParam(value = "name") String employeeName, @RequestParam(value = "age") int employeeAge,
+                                @RequestParam(value = "gender") String employeeGender, @RequestParam(value = "salary") int employeeSalary) {
+
         Employee addEmployee = new Employee(employeeId, employeeName, employeeAge, employeeGender, employeeSalary);
         employees.add(new Employee(0, "Xiaoming", 20, "male", 20000));
         employees.add(new Employee(1, "Xiaohong", 19, "female", 20000));
@@ -60,7 +64,7 @@ public class EmployeesController {
 
     @PutMapping(path = "/{employeeId}")
     public Employee modifyEmployee(@PathVariable("employeeId") int employeeId, @RequestParam(value = "name") String employeeName, @RequestParam(value = "age") int employeeAge, @RequestParam(value = "gender") String employeeGender, @RequestParam(value = "salary") int employeeSalary) {
-        List<Employee> employees = new ArrayList<>();
+
         employees.add(new Employee(0, "Xiaoming", 20, "male", 20000));
         employees.add(new Employee(1, "Xiaohong", 19, "female", 20000));
         employees.add(new Employee(2, "Xiaozhi", 15, "male", 20000));
@@ -80,7 +84,7 @@ public class EmployeesController {
 
     @DeleteMapping(path = "/{employeeId}")
     public void deleteEmployee(@PathVariable("employeeId") int employeeId) {
-        List<Employee> employees = new ArrayList<>();
+
         employees.add(new Employee(0, "Xiaoming", 20, "male", 20000));
         employees.add(new Employee(1, "Xiaohong", 19, "female", 20000));
         employees.add(new Employee(2, "Xiaozhi", 15, "male", 20000));
