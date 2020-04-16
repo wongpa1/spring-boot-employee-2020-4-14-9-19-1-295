@@ -13,20 +13,24 @@ public class EmployeesController {
 
     List<Employee> employees = new ArrayList<>();
 
-    @GetMapping
-    public List<Employee> getAllEmployees(@RequestParam(value = "gender", required = false, defaultValue = "All") String gender,
-                                          @RequestParam(value = "page", required = false, defaultValue = "0") int page,
-                                          @RequestParam(value = "pageSize", required = false, defaultValue = "0") int pageSize) {
-
+    private void initialEmployeeList() {
         employees.add(new Employee(0, "Xiaoming", 20, "male", 20000));
         employees.add(new Employee(1, "Xiaohong", 19, "female", 20000));
         employees.add(new Employee(2, "Xiaozhi", 15, "male", 20000));
         employees.add(new Employee(3, "Xiaomgang", 26, "male", 20000));
         employees.add(new Employee(4, "Xiaoxia", 15, "female", 20000));
+    }
+
+    @GetMapping
+    public List<Employee> getAllEmployees(@RequestParam(value = "gender", required = false, defaultValue = "All") String gender,
+                                          @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                          @RequestParam(value = "pageSize", required = false, defaultValue = "0") int pageSize) {
+        initialEmployeeList();
         if (!gender.equals("All")) {
             return employees.stream().filter(employee -> employee.getGender().equals(gender)).collect(Collectors.toList());
         }
         if (page != 0 && pageSize != 0) {
+            //TODO: use list size to do paging
             return employees.stream().filter(employee -> employee.getId() >= (page - 1) * pageSize && employee.getId() < page * pageSize).collect(Collectors.toList());
         }
         return employees;
@@ -35,11 +39,7 @@ public class EmployeesController {
     @GetMapping(path = "/{employeeID}")
     public Employee getEmployeeByID(@PathVariable("employeeID") int id) {
 
-        employees.add(new Employee(0, "Xiaoming", 20, "male", 20000));
-        employees.add(new Employee(1, "Xiaohong", 19, "female", 20000));
-        employees.add(new Employee(2, "Xiaozhi", 15, "male", 20000));
-        employees.add(new Employee(3, "Xiaomgang", 26, "male", 20000));
-        employees.add(new Employee(4, "Xiaoxia", 15, "female", 20000));
+        initialEmployeeList();
         for (Employee employee : employees) {
             if (employee.getId() == id) {
                 return employee;
@@ -49,33 +49,23 @@ public class EmployeesController {
     }
 
     @PostMapping
-    public Employee addEmployee(@RequestParam(value = "id") int employeeId, @RequestParam(value = "name") String employeeName, @RequestParam(value = "age") int employeeAge,
-                                @RequestParam(value = "gender") String employeeGender, @RequestParam(value = "salary") int employeeSalary) {
-
-        Employee addEmployee = new Employee(employeeId, employeeName, employeeAge, employeeGender, employeeSalary);
-        employees.add(new Employee(0, "Xiaoming", 20, "male", 20000));
-        employees.add(new Employee(1, "Xiaohong", 19, "female", 20000));
-        employees.add(new Employee(2, "Xiaozhi", 15, "male", 20000));
-        employees.add(new Employee(3, "Xiaomgang", 26, "male", 20000));
-        employees.add(new Employee(4, "Xiaoxia", 15, "female", 20000));
-        employees.add(addEmployee);
-        return addEmployee;
+    public Employee addEmployee(@RequestBody Employee employee) {
+        initialEmployeeList();
+        employees.add(employee);
+        return employee;
     }
 
     @PutMapping(path = "/{employeeId}")
-    public Employee modifyEmployee(@PathVariable("employeeId") int employeeId, @RequestParam(value = "name") String employeeName, @RequestParam(value = "age") int employeeAge, @RequestParam(value = "gender") String employeeGender, @RequestParam(value = "salary") int employeeSalary) {
+    public Employee modifyEmployee(@PathVariable("employeeId") int employeeId, @RequestBody Employee newEmployee) {
 
-        employees.add(new Employee(0, "Xiaoming", 20, "male", 20000));
-        employees.add(new Employee(1, "Xiaohong", 19, "female", 20000));
-        employees.add(new Employee(2, "Xiaozhi", 15, "male", 20000));
-        employees.add(new Employee(3, "Xiaomgang", 26, "male", 20000));
-        employees.add(new Employee(4, "Xiaoxia", 15, "female", 20000));
+        initialEmployeeList();
         for (Employee employee : employees) {
             if (employee.getId() == employeeId) {
-                employee.setName(employeeName);
-                employee.setAge(employeeAge);
-                employee.setGender(employeeGender);
-                employee.setSalary(employeeSalary);
+                employee.setId(newEmployee.getId());
+                employee.setName(newEmployee.getName());
+                employee.setAge(newEmployee.getAge());
+                employee.setGender(newEmployee.getGender());
+                employee.setSalary(newEmployee.getSalary());
                 return employee;
             }
         }
@@ -85,11 +75,7 @@ public class EmployeesController {
     @DeleteMapping(path = "/{employeeId}")
     public void deleteEmployee(@PathVariable("employeeId") int employeeId) {
 
-        employees.add(new Employee(0, "Xiaoming", 20, "male", 20000));
-        employees.add(new Employee(1, "Xiaohong", 19, "female", 20000));
-        employees.add(new Employee(2, "Xiaozhi", 15, "male", 20000));
-        employees.add(new Employee(3, "Xiaomgang", 26, "male", 20000));
-        employees.add(new Employee(4, "Xiaoxia", 15, "female", 20000));
+        initialEmployeeList();
         employees.removeIf(employee -> employee.getId() == employeeId);
     }
 }
