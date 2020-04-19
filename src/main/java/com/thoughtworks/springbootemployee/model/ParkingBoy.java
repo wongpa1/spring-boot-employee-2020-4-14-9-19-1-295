@@ -5,19 +5,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
-@Table(name = "company")
-public class Company {
+@Table(name = "parkingBoy")
+public class ParkingBoy {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String companyName;
-    private Integer employeesNumber;
-    @OneToMany(targetEntity = Employee.class, mappedBy = "companyId", fetch = FetchType.EAGER)
-    private List<Employee> employees;
+    private String nickName;
+    private Integer employeeId;
+    @OneToOne
+    @JoinColumn(name="employeeId", insertable = false, updatable = false)
+    private Employee employee;
 }

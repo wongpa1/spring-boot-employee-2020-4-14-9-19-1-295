@@ -16,8 +16,8 @@ public class EmployeesController {
 
     @GetMapping
     public List<Employee> getAllEmployees(@RequestParam(value = "gender", required = false, defaultValue = "All") String gender,
-                                          @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
-                                          @RequestParam(value = "pageSize", required = false, defaultValue = "0") Integer pageSize) {
+                                          @RequestParam(value = "page", required = false) Integer page,
+                                          @RequestParam(value = "pageSize", required = false) Integer pageSize) {
         return service.getAll(gender, page, pageSize);
     }
 
@@ -28,12 +28,12 @@ public class EmployeesController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public List<Employee> addEmployee(@RequestBody Employee newEmployee) {
+    public Employee addEmployee(@RequestBody Employee newEmployee) {
         return service.addNewEmployee(newEmployee);
     }
 
     @PutMapping(path = "/{employeeId}")
-    public List<Employee> modifyEmployee(@PathVariable("employeeId") Integer employeeId, @RequestBody Employee newEmployee) {
+    public Employee modifyEmployee(@PathVariable("employeeId") Integer employeeId, @RequestBody Employee newEmployee) {
         return service.modifyEmployee(employeeId, newEmployee);
     }
 
