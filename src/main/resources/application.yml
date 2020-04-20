@@ -1,6 +1,9 @@
 spring:
+  h2:
+    console:
+      enabled: true
   datasource:
-    url: jdbc:h2:mem:testdb
+    url: jdbc:h2:file:C:\Users\wongpa\Desktop\trainning\spring-boot-employee-2020-4-14-9-19-1-295\test
   jpa:
       hibernate:
         ddl-auto: update

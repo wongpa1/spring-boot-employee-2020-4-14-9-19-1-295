@@ -14,6 +14,9 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.lang.reflect.Type;
@@ -84,26 +87,32 @@ public class CompanyControllerTest {
         Assert.assertEquals("ADIDAS", company.getCompanyName());
     }
 
-    //    @Test
-//    public void shouldPrintCompaniesByPage() {
-//
-//        MockMvcResponse response = given().contentType(ContentType.JSON)
-//                .params("page", 2).params("pageSize", 1)
-//                .when()
-//                .get("/companies");
-//
-//        Assert.assertEquals(200, response.getStatusCode());
-//
-//        List<Company> companies = response.getBody().as(new TypeRef<List<Company>>() {
-//            @Override
-//            public Type getType() {
-//                return super.getType();
-//            }
-//        });
-//        Assert.assertEquals(2, companies.size());
-//        Assert.assertEquals("NIKE", companies.get(0).getCompanyName());
-//    }
-//
+    @Test
+    public void shouldPrintCompaniesByPage() {
+        List<Company> companyList = new ArrayList<>();
+        companyList.add(new Company(1, "NIKE", null, null));
+        companyList.add(new Company(2, "ADIDAS", null, null));
+        companyList.add(new Company(3, "PUMA", null, null));
+        companyList.add(new Company(4, "NEW_BALANCE", null, null));
+        Page<Company> expected = new PageImpl<>(companyList.subList(2, 4));
+        when(repository.findAll(PageRequest.of(0, 2))).thenReturn(expected);
+        MockMvcResponse response = given().contentType(ContentType.JSON)
+                .params("page", 1).params("pageSize", 2)
+                .when()
+                .get("/companies");
+
+        Assert.assertEquals(200, response.getStatusCode());
+
+        List<Company> companies = response.getBody().as(new TypeRef<List<Company>>() {
+            @Override
+            public Type getType() {
+                return super.getType();
+            }
+        });
+        Assert.assertEquals(2, companies.size());
+        Assert.assertEquals("PUMA", companies.get(0).getCompanyName());
+    }
+
     @Test
     public void shouldPrintEmployeesByCompanyId() {
         List<Employee> employeeList = new ArrayList<>();

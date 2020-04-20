@@ -1,0 +1,1 @@
+ALTER TABLE test_table ALTER COLUMN name char(40) not null;
